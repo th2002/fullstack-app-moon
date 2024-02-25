@@ -1,12 +1,9 @@
 {
+  "rootDir": "src",
   "compilerOptions": {
-    "paths": {
-      "@/*": ["./src/*"],
-      "@components/*": ["./src/components/*"],
-      "@layouts/*": ["./src/layouts/*"],
-      "@containers/*": ["./src/containers/*"],
-      "@pages/*": ["./src/pages/*"]
-    }
+    "baseUrl": "src"
   },
+  "include": ["src"],
   "exclude": ["node_modules"]
 }
+
