@@ -1,10 +1,23 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 import { Layout, AdminLayout, AuthLayout } from 'layouts/.';
 import { Home, UserProfile, AdminHome, Authentication } from 'pages/.';
+import { firebaseApp } from 'config/firebase.config';
 
 const App = () => {
+  useEffect(() => {
+    const unsubrsibe = firebaseApp.auth.onAuthStateChanged(userCred => {
+      if (userCred) {
+        userCred.getIdToken().then(token => {
+          console.log(token);
+        });
+      }
+    });
+
+    return () => unsubrsibe();
+  }, [firebaseApp.auth]);
+
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <Routes>
