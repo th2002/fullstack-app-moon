@@ -17,6 +17,9 @@ export { default as Avatar3 } from './images/avatar3.avif';
 export { default as Avatar4 } from './images/avatar4.avif';
 export { default as Avatar5 } from './images/avatar5.avif';
 
-// bg
-export { default as BG } from './images/bg.jpgf';
+// gifs
+export { default as manGif } from './gifs/main_walk.gif';
+
+// videos
+export { default as bgVideo } from './videos/auth_video_bg.mp4';
 

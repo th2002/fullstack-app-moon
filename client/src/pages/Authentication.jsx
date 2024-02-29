@@ -1,14 +1,31 @@
-import React, { useCallback } from 'react';
+import React, { useEffect } from 'react';
 import { GoogleAuthProvider, signInWithRedirect } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
 
-import backgroundVideo from 'assets/auth_video_bg.mp4';
 import { FcGoogle } from 'react-icons/fc';
+import { useUser } from 'hooks';
 import { firebaseApp } from 'config/firebase.config';
+import { bgVideo } from 'assets';
+import Loading from 'components/Loading';
 
 const Authentication = () => {
   const googleProvider = new GoogleAuthProvider();
 
-  const handleLoginAction = useCallback(async () => {
+  const { data: user, isLoading, isError, refetch } = useUser();
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isLoading && user) {
+      navigate('/', { replace: true });
+    }
+  }, [isLoading, user]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  const handleLoginAction = async () => {
     try {
       const userCred = await signInWithRedirect(
         firebaseApp.auth,
@@ -21,7 +38,7 @@ const Authentication = () => {
     } catch (error) {
       console.error('Error during login', error);
     }
-  }, []);
+  };
 
   return (
     <div className="relative flex h-dvh w-screen items-center justify-center overflow-hidden px-4 py-6">
@@ -31,7 +48,7 @@ const Authentication = () => {
         loop
         muted
       >
-        <source src={backgroundVideo} type="video/mp4" />
+        <source src={bgVideo} type="video/mp4" />
       </video>
 
       <div className="flex w-full flex-col items-center justify-center gap-8 rounded-md bg-[rgba(255,255,255,0.15)] px-4 py-6 backdrop-blur-md sm:w-96">
