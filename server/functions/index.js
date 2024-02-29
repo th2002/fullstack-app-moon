@@ -24,19 +24,29 @@ exports.validateUserJwtToken = functions.https.onRequest((req, res) => {
 
     // Verify the JWT token
     try {
+      let userData;
       const decodedToken = await admin.auth().verifyIdToken(token);
 
       if (decodedToken) {
         const docRef = db.collection("users").doc(decodedToken.uid);
         const doc = await docRef.get();
 
+        // If the user doesn't exist in the firestore, add them
         if (!doc.exists) {
           const userRef = db.collection("users").doc(decodedToken.uid);
-          await userRef.set(decodedToken);
-        }
 
-        // Token is valid, return success
-        res.status(200).json({ message: "Token is valid", user: decodedToken });
+          userData = decodedToken;
+          // Add the default role
+          userData.role = "member";
+
+          await userRef.set(userData);
+
+          // Done - return success
+          res.status(200).json({ message: "Token is valid", user: userData });
+        } else {
+          // Token is valid, return success
+          res.status(200).json({ message: "Token is valid", user: doc.data() });
+        }
       }
     } catch (error) {
       // Token verification failed, return error
