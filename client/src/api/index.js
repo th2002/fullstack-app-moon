@@ -1,10 +1,11 @@
-import { firebaseApp } from 'config/firebase.config';
+import { auth } from 'config/firebase.config';
+import { onAuthStateChanged } from 'firebase/auth';
 import { baseURL } from 'utils/helpers';
 
 export const getAuthenticatedUser = async () => {
   return new Promise((resolve, reject) => {
     // listen for auth state changes
-    const unsubscribe = firebaseApp.auth.onAuthStateChanged(async userCred => {
+    const unsubscribe = onAuthStateChanged(auth, async userCred => {
       try {
         if (userCred) {
           const token = await userCred.getIdToken();
@@ -24,7 +25,7 @@ export const getAuthenticatedUser = async () => {
 
           resolve(userData?.user);
         } else {
-          throw new Error('User is not authenticated');
+          throw new Error('User is not authenticated in api');
         }
       } catch (error) {
         reject(error);

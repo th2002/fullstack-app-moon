@@ -1,15 +1,24 @@
 import React, { useEffect } from 'react';
-import { GoogleAuthProvider, signInWithRedirect } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
+import {
+  FacebookAuthProvider,
+  GithubAuthProvider,
+  GoogleAuthProvider,
+  signInWithRedirect
+} from 'firebase/auth';
 
 import { FcGoogle } from 'react-icons/fc';
-import { useUser } from 'hooks';
-import { firebaseApp } from 'config/firebase.config';
+import { FaFacebookF, FaGithub } from 'react-icons/fa';
 import { bgVideo } from 'assets';
 import Loading from 'components/Loading';
 
+import { useUser } from 'hooks';
+import { auth, db, storage } from 'config/firebase.config';
+
 const Authentication = () => {
+  const githubProvider = new GithubAuthProvider();
   const googleProvider = new GoogleAuthProvider();
+  const facebookProvider = new FacebookAuthProvider();
 
   const { data: user, isLoading, isError, refetch } = useUser();
 
@@ -25,19 +34,27 @@ const Authentication = () => {
     return <Loading />;
   }
 
-  const handleLoginAction = async () => {
+  const handleLoginAction = async provider => {
     try {
-      const userCred = await signInWithRedirect(
-        firebaseApp.auth,
-        googleProvider
-      );
-
-      if (userCred) {
-        console.log(userCred);
-      }
+      await signInWithRedirect(auth, provider);
     } catch (error) {
       console.error('Error during login', error);
     }
+  };
+
+  // Login with Google
+  const handleGoogleLogin = () => {
+    handleLoginAction(googleProvider);
+  };
+
+  // Login with Facebook
+  const handleFacebookLogin = () => {
+    handleLoginAction(facebookProvider);
+  };
+
+  // Login with Github
+  const handleGithubLogin = () => {
+    handleLoginAction(githubProvider);
   };
 
   return (
@@ -57,14 +74,36 @@ const Authentication = () => {
           <p className="text-lg text-gray-700">Sign in to access your store</p>
         </div>
 
-        <div
-          onClick={handleLoginAction}
-          className="flex w-full cursor-pointer items-center justify-center gap-4 rounded-md border border-gray-400 bg-[rgba(255,255,255,0.2)] px-4 py-3 transition-all duration-150 ease-in-out active:scale-95"
-        >
-          <FcGoogle className="text-3xl" />
-          <p className="text-lg font-semibold text-white">
-            Sign in with Google
-          </p>
+        <div className="flex w-full flex-col items-center justify-center gap-4">
+          <div
+            onClick={handleGoogleLogin}
+            className="flex w-full cursor-pointer items-center justify-center gap-4 rounded-md border border-gray-400 bg-[rgba(255,255,255,0.2)] px-4 py-3 transition-all duration-150 ease-in-out active:scale-95"
+          >
+            <FcGoogle className="text-3xl" />
+            <p className="text-lg font-semibold text-white">
+              Sign in with Google
+            </p>
+          </div>
+
+          <div
+            onClick={handleFacebookLogin}
+            className="flex w-full cursor-pointer items-center justify-center gap-4 rounded-md border border-gray-400 bg-[#0866ff] px-4 py-3 transition-all duration-150 ease-in-out active:scale-95"
+          >
+            <FaFacebookF className="text-2xl text-white" />
+            <p className="text-lg font-semibold text-white">
+              Sign in with Facebook
+            </p>
+          </div>
+
+          <div
+            onClick={handleGithubLogin}
+            className="flex w-full cursor-pointer items-center justify-center gap-4 rounded-md border border-gray-400 bg-black px-4 py-3 transition-all duration-150 ease-in-out active:scale-95"
+          >
+            <FaGithub className="text-2xl text-white" />
+            <p className="text-lg font-semibold text-white">
+              Sign in with Github
+            </p>
+          </div>
         </div>
       </div>
     </div>
