@@ -56,3 +56,103 @@ exports.validateUserJwtToken = functions.https.onRequest((req, res) => {
   });
 });
 
+// fucntion to save the app data on the cloud
+exports.createNewApp = functions.https.onRequest((req, res) => {
+  cors(req, res, async () => {
+    try {
+      const data = req.body;
+      const docRef = db.collection("apps").doc(req.body._id);
+      await docRef.set(data);
+
+      // retrieve the data from the cloud
+      const appDetail = await docRef.get();
+      res.status(200).json({ _id: docRef.id, data: appDetail.data() });
+    } catch (error) {
+      res.status(402).send("Error creating new App: " + error.message);
+    }
+  });
+});
+
+// funtioc get all the apps from the cloud
+exports.getAllApps = functions.https.onRequest((req, res) => {
+  cors(req, res, async () => {
+    try {
+      const apps = [];
+
+      // use onSnapShot to list for real-time changes
+      const unsubscribe = db
+        .collection("apps")
+        .orderBy("timeStamp", "desc")
+        .onSnapshot((snapShot) => {
+          apps.length = 0; // clear the existing array
+
+          snapShot.forEach((doc) => {
+            apps.push(doc.data());
+          });
+
+          res.status(200).json(apps);
+        });
+
+      res.on("finish", unsubscribe);
+    } catch (error) {
+      res.status(402).send("Error getting Apps: " + error.message);
+    }
+  });
+});
+
+// function to delete an app from the cloud
+exports.deleteAnApp = functions.https.onRequest((req, res) => {
+  cors(req, res, async () => {
+    try {
+      const { id } = req.query;
+
+      if (!id) return res.status(400).json({ error: "App Id is missing!" });
+
+      await db.collection("apps").doc(id).delete();
+      res.status(200).json({ message: "App deleted successfully" });
+    } catch (error) {
+      res.status(402).send("Error deleting App: " + error.message);
+    }
+  });
+});
+
+// funtioc get all the users from the cloud
+exports.getAllUsers = functions.https.onRequest((req, res) => {
+  cors(req, res, async () => {
+    try {
+      const users = [];
+
+      // use onSnapShot to list for real-time changes
+      const unsubscribe = db.collection("users").onSnapshot((snapShot) => {
+        users.length = 0; // clear the existing array
+
+        snapShot.forEach((doc) => {
+          users.push(doc.data());
+        });
+
+        res.status(200).json(users);
+      });
+
+      res.on("finish", unsubscribe);
+    } catch (error) {
+      res.status(402).send("Error getting Users: " + error.message);
+    }
+  });
+});
+
+// function to update the user role
+exports.updateTheUserRole = functions.https.onRequest((req, res) => {
+  cors(req, res, async () => {
+    try {
+      const { _id, ...data } = req.body;
+
+      if (!_id) return res.status(400).json({ error: "User Id is missing!" });
+
+      await db.collection("users").doc(_id).update(data);
+      res.status(200).json({ message: "User updated successfully" });
+    } catch (error) {
+      res.status(402).send("Error getting Users: " + error.message);
+    }
+  });
+});
+
