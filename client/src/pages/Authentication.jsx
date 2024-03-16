@@ -7,10 +7,10 @@ import {
   signInWithRedirect
 } from 'firebase/auth';
 
+import { MainLoader } from 'components';
 import { FcGoogle } from 'react-icons/fc';
 import { FaFacebookF, FaGithub } from 'react-icons/fa';
 import { bgVideo } from 'assets';
-import Loading from 'components/Loading';
 
 import { useUser } from 'hooks';
 import { auth, db, storage } from 'config/firebase.config';
@@ -31,7 +31,7 @@ const Authentication = () => {
   }, [isLoading, user]);
 
   if (isLoading) {
-    return <Loading />;
+    return <MainLoader />;
   }
 
   const handleLoginAction = async provider => {

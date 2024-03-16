@@ -1,5 +1,6 @@
 import { auth } from 'config/firebase.config';
 import { onAuthStateChanged } from 'firebase/auth';
+import { toast } from 'react-toastify';
 import { baseURL } from 'utils/helpers';
 
 export const getAuthenticatedUser = async () => {
@@ -37,3 +38,92 @@ export const getAuthenticatedUser = async () => {
   });
 };
 
+export const saveAppDataToCloud = async data => {
+  try {
+    const res = await fetch(`${baseURL}/createNewApp`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    });
+
+    if (!res.ok) {
+      toast.error('Failed to create an app');
+    }
+
+    const resData = await res.json();
+    return resData;
+  } catch (error) {
+    toast.error('Error: ', error.message);
+  }
+};
+
+export const getAllAppsFromTheCloud = async () => {
+  try {
+    const res = await fetch(`${baseURL}/getAllApps`);
+
+    if (!res.ok) {
+      toast.error('Failed to fetch apps');
+    }
+
+    const resData = await res.json();
+    return resData;
+  } catch (error) {
+    toast.error('Error: ', error.message);
+  }
+};
+
+export const deleteAnAppFromCloud = async id => {
+  try {
+    const res = await fetch(`${baseURL}/deleteAnApp?id=${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!res.ok) toast.error('Failed to delete an app');
+
+    const message = await res.json();
+    return message;
+  } catch (error) {
+    toast.error('Error: ', error.message);
+  }
+};
+
+export const getAppUsersFromTheCloud = async () => {
+  try {
+    const res = await fetch(`${baseURL}/getAllUsers`);
+
+    if (!res.ok) {
+      toast.error('Failed to fetch users');
+    }
+
+    const resData = await res.json();
+    return resData;
+  } catch (error) {
+    toast.error('Error: ', error.message);
+  }
+};
+
+export const updateUserDataToCloud = async data => {
+  try {
+    const res = await fetch(`${baseURL}/updateTheUserRole`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    });
+
+    if (!res.ok) {
+      toast.error('Failed to update user');
+    }
+
+    const resData = await res.json();
+    return resData;
+  } catch (error) {
+    toast.error('Error: ', error.message);
+  }
+};

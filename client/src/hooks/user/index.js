@@ -9,13 +9,13 @@ const useUser = () => {
     async () => {
       try {
         const userDetail = await getAuthenticatedUser();
-        toast.success('Fine its working!');
         return userDetail;
       } catch (error) {
         console.error(error);
         if (!error.message.includes('User is not authenticated')) {
           toast.error('Error: ', error.message);
         }
+        return null;
       }
     },
     {

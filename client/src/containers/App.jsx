@@ -5,17 +5,24 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 import { ToastContainer } from 'react-toastify';
 
 import { Layout, AdminLayout, AuthLayout } from 'layouts/.';
-import { Home, UserProfile, AdminHome, Authentication } from 'pages/.';
-import Loading from 'components/Loading';
+import {
+  Home,
+  UserProfile,
+  AdminHome,
+  Authentication,
+  AdminApps,
+  AdminUsers
+} from 'pages/.';
 
 import 'react-toastify/dist/ReactToastify.css';
+import { MainLoader } from 'components';
 
 const App = () => {
   const queryClient = new QueryClient();
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Suspense fallback={<Loading />}>
+      <Suspense fallback={<MainLoader />}>
         <Routes>
           {/* Client User layout */}
           <Route element={<Layout />}>
@@ -25,7 +32,9 @@ const App = () => {
 
           {/* Admin User layout */}
           <Route path="/admin" element={<AdminLayout />}>
-            <Route index element={<AdminHome />}></Route>
+            <Route path="home" element={<AdminHome />}></Route>
+            <Route path="apps" element={<AdminApps />}></Route>
+            <Route path="users" element={<AdminUsers />}></Route>
           </Route>
 
           {/* Auth layout */}
