@@ -1,14 +1,10 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
-
-const cors = require("cors")({ origin: true });
-
+const cors = require("cors")({origin: true});
 // initialize the admin firebase
 admin.initializeApp();
-
 // initialize the db instance
 const db = admin.firestore();
-
 // function to validate the user JWT token
 exports.validateUserJwtToken = functions.https.onRequest((req, res) => {
   cors(req, res, async () => {
@@ -17,7 +13,7 @@ exports.validateUserJwtToken = functions.https.onRequest((req, res) => {
 
     // Check if the token is present
     if (!authorizationHeader || !authorizationHeader.startsWith("Bearer ")) {
-      return res.status(403).json({ error: "Unauthorized checking token" });
+      return res.status(403).json({error: "Unauthorized checking token"});
     }
 
     const token = authorizationHeader.split("Bearer ")[1];
@@ -42,16 +38,16 @@ exports.validateUserJwtToken = functions.https.onRequest((req, res) => {
           await userRef.set(userData);
 
           // Done - return success
-          res.status(200).json({ message: "Token is valid", user: userData });
+          res.status(200).json({message: "Token is valid", user: userData});
         } else {
           // Token is valid, return success
-          res.status(200).json({ message: "Token is valid", user: doc.data() });
+          res.status(200).json({message: "Token is valid", user: doc.data()});
         }
       }
     } catch (error) {
       // Token verification failed, return error
       console.error("Error verifying token:", error);
-      res.status(403).json({ error: "Unauthorized decoding token" });
+      res.status(403).json({error: "Unauthorized decoding token"});
     }
   });
 });
@@ -66,7 +62,7 @@ exports.createNewApp = functions.https.onRequest((req, res) => {
 
       // retrieve the data from the cloud
       const appDetail = await docRef.get();
-      res.status(200).json({ _id: docRef.id, data: appDetail.data() });
+      res.status(200).json({_id: docRef.id, data: appDetail.data()});
     } catch (error) {
       res.status(402).send("Error creating new App: " + error.message);
     }
@@ -81,17 +77,17 @@ exports.getAllApps = functions.https.onRequest((req, res) => {
 
       // use onSnapShot to list for real-time changes
       const unsubscribe = db
-        .collection("apps")
-        .orderBy("timeStamp", "desc")
-        .onSnapshot((snapShot) => {
-          apps.length = 0; // clear the existing array
+          .collection("apps")
+          .orderBy("timeStamp", "desc")
+          .onSnapshot((snapShot) => {
+            apps.length = 0; // clear the existing array
 
-          snapShot.forEach((doc) => {
-            apps.push(doc.data());
+            snapShot.forEach((doc) => {
+              apps.push(doc.data());
+            });
+
+            res.status(200).json(apps);
           });
-
-          res.status(200).json(apps);
-        });
 
       res.on("finish", unsubscribe);
     } catch (error) {
@@ -104,12 +100,12 @@ exports.getAllApps = functions.https.onRequest((req, res) => {
 exports.deleteAnApp = functions.https.onRequest((req, res) => {
   cors(req, res, async () => {
     try {
-      const { id } = req.query;
+      const {id} = req.query;
 
-      if (!id) return res.status(400).json({ error: "App Id is missing!" });
+      if (!id) return res.status(400).json({error: "App Id is missing!"});
 
       await db.collection("apps").doc(id).delete();
-      res.status(200).json({ message: "App deleted successfully" });
+      res.status(200).json({message: "App deleted successfully"});
     } catch (error) {
       res.status(402).send("Error deleting App: " + error.message);
     }
@@ -144,12 +140,12 @@ exports.getAllUsers = functions.https.onRequest((req, res) => {
 exports.updateTheUserRole = functions.https.onRequest((req, res) => {
   cors(req, res, async () => {
     try {
-      const { _id, ...data } = req.body;
+      const {_id, ...data} = req.body;
 
-      if (!_id) return res.status(400).json({ error: "User Id is missing!" });
+      if (!_id) return res.status(400).json({error: "User Id is missing!"});
 
       await db.collection("users").doc(_id).update(data);
-      res.status(200).json({ message: "User updated successfully" });
+      res.status(200).json({message: "User updated successfully"});
     } catch (error) {
       res.status(402).send("Error getting Users: " + error.message);
     }
