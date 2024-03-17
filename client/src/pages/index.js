@@ -1,5 +1,6 @@
 export { default as Home } from './Home';
 export { default as UserProfile } from './UserProfile';
+export { default as AppDetail } from './AppDetail';
 
 // admin
 export { default as AdminHome } from './admin/AdminHome';

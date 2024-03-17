@@ -6,7 +6,7 @@ import { AdminHeader, MainLoader } from 'components';
 import { FaHouse } from 'react-icons/fa6';
 
 const AdminLayout = () => {
-  const { data: user, isLoading: userLoading, isError, refetch } = useUser();
+  const { data: user, isLoading: userLoading } = useUser();
 
   const navigate = useNavigate();
 

@@ -1,25 +1,37 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useQueryClient } from 'react-query';
 
 import { useUser } from 'hooks';
-import { Menus, singOutTheUser } from 'utils/helpers';
+import { Menus } from 'utils/helpers';
 
 import { TbCurrencyDollar } from 'react-icons/tb';
 import { FaChevronDown } from 'react-icons/fa';
 import { dropDownMenu } from 'animation';
 import { Avatar } from 'assets';
+import { auth } from 'config/firebase.config';
+import { toast } from 'react-toastify';
 
 const UserProfileContainer = () => {
-  const { data: user, isLoading: userLoading, isError, refetch } = useUser();
+  const { data: user } = useUser();
 
-  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  const handleSignOut = () => {
+    auth.signOut().then(() => {
+      toast.success('Logged out successfully');
+      navigate('/auth', { replace: true });
+    });
+  };
+
+  const handleSignUp = () => {
+    navigate('/auth', { replace: true });
+  };
 
   const [isHoverred, setHoverred] = useState(false);
 
   return (
-    <div className="relative flex cursor-pointer items-center justify-center gap-4">
+    <div className="relative flex cursor-pointer items-center justify-center gap-4 pr-4">
       {/* name content */}
       <div className="flex flex-col items-start justify-start gap-1">
         <h2 className="text-lg font-bold capitalize text-textPrimary">
@@ -38,7 +50,9 @@ const UserProfileContainer = () => {
             </React.Fragment>
           ) : (
             <React.Fragment>
-              <p className="text-lg font-semibold text-heroPrimary">0</p>
+              <p className="text-lg font-semibold text-heroPrimary">
+                {user ? 1000 : 0}
+              </p>
             </React.Fragment>
           )}
         </div>
@@ -46,7 +60,7 @@ const UserProfileContainer = () => {
 
       {/* image content */}
       <div
-        className="relative flex size-12 items-center justify-center rounded-full bg-gradient-to-b from-heroPrimary to-heroSecondary p-1"
+        className="size-min-12 relative flex size-12 items-center justify-center rounded-full bg-gradient-to-b from-heroPrimary to-heroSecondary p-1"
         onMouseEnter={() => setHoverred(true)}
       >
         <img
@@ -70,12 +84,12 @@ const UserProfileContainer = () => {
             {Menus &&
               Menus.map(menu => (
                 <React.Fragment key={menu.id}>
-                  {menu.isAdmin ? (
-                    <Link className="px-1 py-2 font-semibold hover:text-heroSecondary">
-                      {menu.menu}
-                    </Link>
-                  ) : (
-                    <Link className="px-1 py-2 font-semibold hover:text-heroSecondary">
+                  {(user?.role === 'admin' ||
+                    (user?.role === 'member' && !menu.isAdmin)) && (
+                    <Link
+                      to={menu.url}
+                      className="px-1 py-2 font-semibold hover:text-heroSecondary"
+                    >
                       {menu.menu}
                     </Link>
                   )}
@@ -83,10 +97,18 @@ const UserProfileContainer = () => {
               ))}
             <button
               type="button"
-              onClick={() => singOutTheUser(queryClient)}
-              className="w-full rounded-md bg-textPrimary px-4 py-2 text-primary transition-all duration-150 ease-in-out active:scale-95"
+              onClick={handleSignOut}
+              className={`w-full rounded-md bg-textPrimary px-4 py-2 text-primary transition-all duration-150 ease-in-out active:scale-95 ${user && user?.role ? 'block' : 'hidden'}`}
             >
               Sign Out
+            </button>
+
+            <button
+              type="button"
+              onClick={handleSignUp}
+              className={`w-full rounded-md bg-heroPrimary px-4 py-2 text-primary transition-all duration-150 ease-in-out active:scale-95 ${user && user?.role && 'hidden'}`}
+            >
+              Sign up
             </button>
           </motion.div>
         )}

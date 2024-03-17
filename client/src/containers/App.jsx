@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect } from 'react';
+import React, { Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
@@ -11,7 +11,8 @@ import {
   AdminHome,
   Authentication,
   AdminApps,
-  AdminUsers
+  AdminUsers,
+  AppDetail
 } from 'pages/.';
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -27,6 +28,7 @@ const App = () => {
           {/* Client User layout */}
           <Route element={<Layout />}>
             <Route index element={<Home />}></Route>
+            <Route path="/detail/:appid" element={<AppDetail />}></Route>
             <Route path="/profile/:id" element={<UserProfile />}></Route>
           </Route>
 

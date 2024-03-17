@@ -1,13 +1,30 @@
 import { auth } from 'config/firebase.config';
+import {
+  FaBehance,
+  FaFacebook,
+  FaLinkedin,
+  FaListAlt,
+  FaUserAlt
+} from 'react-icons/fa';
+import { FaBolt, FaListCheck } from 'react-icons/fa6';
+import { MdOutlineSportsSoccer } from 'react-icons/md';
+import {
+  GiTrophy,
+  GiTransportationRings,
+  GiCardAceClubs
+} from 'react-icons/gi';
+import { TbTopologyStarRing3 } from 'react-icons/tb';
+import { BiLogoDiscordAlt, BiSolidJoystick } from 'react-icons/bi';
+import { RiCustomerService2Fill } from 'react-icons/ri';
 
 export const baseURL = 'http://127.0.0.1:5001/full-stack-app-moon/us-central1';
 
 export const Menus = [
   { id: 10001, menu: 'My Profile', url: '/profile' },
   { id: 10002, menu: 'My Favouries', url: '/favouries' },
-  { id: 10003, menu: 'Dashboard', url: '/profile', isAdmin: true },
-  { id: 10004, menu: 'Users', url: '/profile', isAdmin: true },
-  { id: 10005, menu: `App's`, url: '/profile', isAdmin: true }
+  { id: 10003, menu: 'Dashboard', url: '/admin/home', isAdmin: true },
+  { id: 10004, menu: 'Users', url: '/admin/users', isAdmin: true },
+  { id: 10005, menu: `App's`, url: '/admin/apps', isAdmin: true }
 ];
 
 export const singOutTheUser = queryClient => {
@@ -15,4 +32,57 @@ export const singOutTheUser = queryClient => {
     queryClient.setQueryData('user', null);
   });
 };
+
+export const ClientMenus = [
+  {
+    title: 'Sports',
+    submenu: true,
+    Icon: MdOutlineSportsSoccer,
+    subMenuItems: [
+      { title: 'Free Match', Icon: GiTransportationRings },
+      { title: 'Live Sports', Icon: GiTrophy }
+    ]
+  },
+  {
+    title: 'Casino',
+    Icon: GiCardAceClubs,
+    spacing: true
+  },
+  {
+    title: 'Slot Games',
+    Icon: TbTopologyStarRing3
+  },
+  {
+    title: 'Virtual Games',
+    Icon: BiSolidJoystick
+  },
+  {
+    title: 'Mini Games',
+    Icon: FaBolt
+  },
+  {
+    title: 'Betting History',
+    Icon: FaListAlt
+  },
+  {
+    title: 'Community',
+    Icon: FaUserAlt,
+    spacing: true,
+    submenu: true,
+    subMenuItems: [
+      { title: 'Discord', Icon: BiLogoDiscordAlt },
+      { title: 'Linked In', Icon: FaLinkedin },
+      { title: 'Facebook', Icon: FaFacebook },
+      { title: 'Behnace', Icon: FaBehance }
+    ]
+  },
+  {
+    title: 'Events List',
+    Icon: FaListCheck
+  },
+  {
+    title: 'Customer Services',
+    Icon: RiCustomerService2Fill
+  }
+];
 

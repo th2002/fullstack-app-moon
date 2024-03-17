@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 
 const AdminAppListCard = ({ data }) => {
   const { data: user } = useUser();
-  const { data: apps, refetch: refetchApps } = useApps();
+  const { refetch: refetchApps } = useApps();
 
   const [isDelete, setIsDelete] = useState(false);
 

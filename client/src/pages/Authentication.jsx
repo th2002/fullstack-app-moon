@@ -13,14 +13,14 @@ import { FaFacebookF, FaGithub } from 'react-icons/fa';
 import { bgVideo } from 'assets';
 
 import { useUser } from 'hooks';
-import { auth, db, storage } from 'config/firebase.config';
+import { auth } from 'config/firebase.config';
 
 const Authentication = () => {
   const githubProvider = new GithubAuthProvider();
   const googleProvider = new GoogleAuthProvider();
   const facebookProvider = new FacebookAuthProvider();
 
-  const { data: user, isLoading, isError, refetch } = useUser();
+  const { data: user, isLoading } = useUser();
 
   const navigate = useNavigate();
 
